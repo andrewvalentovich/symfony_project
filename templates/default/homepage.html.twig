@@ -18,7 +18,7 @@
                                 <a class="col px-4 d-flex flex-column article-item" href="{{ path('app_article_page', { slug : article.slug }) }}">
                                     <h5 class="mb-2">{{ article.title }}</h5>
                                     <div class="d-flex mb-2">
-                                        <div class="text-muted align-self-center"><img class="article-author-img rounded-circle" src="https://robohash.org/{{ article.author }}.png?set=set{{ article.slug }}">{{ article.author }}</div>
+                                        <div class="text-muted align-self-center"><img class="article-author-img rounded-circle" src="{{ article.author.avatarUrl }}">{{ article.author.firstName }}</div>
                                         <div class="text-muted align-self-center ml-3"><i class="fas fa-clock size-is-"></i>{{ article.publishedAt|ago }}</div>
                                     </div>
                                       <div class="mb-2 d-flex">

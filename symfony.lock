@@ -109,6 +109,15 @@
     "nesbot/carbon": {
         "version": "2.50.0"
     },
+    "phpdocumentor/reflection-common": {
+        "version": "2.2.0"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "5.2.2"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "1.4.0"
+    },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
         "recipe": {
@@ -175,6 +184,9 @@
     "symfony/security-http": {
         "version": "v5.3.6"
     },
+    "symfony/serializer": {
+        "version": "v5.3.4"
+    },
     "symfony/translation": {
         "version": "5.3",
         "recipe": {
@@ -190,5 +202,8 @@
     },
     "twig/string-extra": {
         "version": "v3.3.1"
+    },
+    "webmozart/assert": {
+        "version": "1.10.0"
     }
 }

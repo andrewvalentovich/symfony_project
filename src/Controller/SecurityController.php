@@ -2,9 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Security\LoginAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -24,6 +29,43 @@ class SecurityController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+    }
+
+    /**
+     * @Route("/register", name="app_register")
+     */
+    public function register(
+        Request $request,
+        UserPasswordEncoderInterface $userPasswordEncoder,
+        GuardAuthenticatorHandler $guard,
+        LoginAuthenticator $loginAuthenticator
+    ) {
+        if ($request->isMethod('POST')) {
+            $user = new User();
+
+            $user
+                ->setEmail($request->request->get('email'))
+                ->setFirstName($request->request->get('firstName'))
+                ->setPassword($userPasswordEncoder->encodePassword($user, $request->request->get('password')))
+                ->setIsActive(true)
+            ;
+
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($user);
+            $em->flush();
+
+            return $guard->authenticateUserAndHandleSuccess(
+                $user,
+                $request,
+                $loginAuthenticator,
+                'main'
+            );
+        }
+
+        return $this->render('security/register.html.twig', [
+            'error' =>  '',
+        ]);
     }
 
     /**

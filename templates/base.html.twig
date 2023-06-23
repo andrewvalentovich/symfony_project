@@ -57,6 +57,9 @@
                                 {% if is_granted('ROLE_ADMIN') %}
                                 <a class="dropdown-item" href="{{ path('app_admin_page') }}">Администрирование</a>
                                 {% endif %}
+                                {% if is_granted('ROLE_ADMIN_ARTICLE') %}
+                                <a class="dropdown-item" href="{{ path('app_admin_articles_create') }}">Создание статьи</a>
+                                {% endif %}
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ path("app_logout") }}">Выйти</a>
                             </div>
@@ -64,7 +67,7 @@
                         {% else %}
                         <li class="nav-item d-flex my-auto">
                             <a class="btn btn-outline-light my-2 my-sm-0 mr-2" href="{{ path("app_login") }}">Войти</a>
-                            <a class="btn btn-outline-light my-2 my-sm-0" href="/register.html">Регистрация</a>
+                            <a class="btn btn-outline-light my-2 my-sm-0" href="{{ path('app_register') }}">Регистрация</a>
                         </li>
                         {% endif %}
                     </ul>

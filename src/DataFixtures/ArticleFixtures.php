@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Entity\Tag;
+use App\Entity\User;
 use App\Homework\ArticleContentProvider;
 use App\Homework\CommentContentProvider;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -17,12 +18,6 @@ class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
         'Три предметно-ориентированных языка программирования для цифровой обработки сигналов',
         'Как составить ТЗ, чтобы не пришлось икать?',
         'Как создать 3d игру прямо в браузере'
-    ];
-
-    static $authorArray = [
-        'Владимир Петрушкин',
-        'Александр Правильный',
-        'Петр Создатель'
     ];
 
     static $filenameArray = [
@@ -57,7 +52,7 @@ class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
             }
 
             $article
-                ->setAuthor($this->faker->randomElement(self::$authorArray))
+                ->setAuthor($this->getRandomReference(User::class))
                 ->setVoteCount(rand(0, 10))
                 ->setImageFilename($this->faker->randomElement(self::$filenameArray))
             ;
