@@ -22,6 +22,6 @@ class VotingController extends AbstractController
 
         $em->flush();
 
-        return $this->json(['votes' => $article->getVoteCount()]);
+        return $this->json(['votes' => $article->getVoteCount(), 'slug' => $slug]);
     }
 }

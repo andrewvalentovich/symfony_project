@@ -6,13 +6,9 @@ use App\Entity\Article;
 use App\Homework\ArticleContentProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 
 class ArticlesCreateController extends AbstractController
 {
-    /**
-     * @Route("/admin/articles/create/", name="app_admin_articles_create")
-     */
     public function articlesCreate(ArticleContentProvider $articleContentProvider, EntityManagerInterface $em)
     {
         $wordArray = ['статья', 'новость', 'ИТ', 'технологии', 'инженерия', 'роботы', 'производство', 'хакинг'];
@@ -66,11 +62,6 @@ class ArticlesCreateController extends AbstractController
             ->setImageFilename(sprintf('images/%s', $filenameArray[$triple]))
             ->setPublishedAt(new \DateTime(sprintf('-%d days', rand(2, 60))));
 
-        $em->persist($article);
-        $em->flush();
-
-        return $this->render('admin/articles_create/index.html.twig', [
-            'article' => $article,
-        ]);
+        return $article;
     }
 }

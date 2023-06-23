@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,6 +24,7 @@ class Article
     private $title;
 
     /**
+     * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(type="string", length=100)
      */
     private $slug;
@@ -61,6 +63,18 @@ class Article
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $publishedAt;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
+
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
 
     public function getId(): ?int
     {
@@ -187,5 +201,29 @@ class Article
         $this->voteCount--;
 
         return $this->voteCount;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 }
