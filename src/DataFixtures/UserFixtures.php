@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\ApiToken;
 use App\Entity\User;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -24,7 +25,7 @@ class UserFixtures extends BaseFixtures
 
     public function loadData(ObjectManager $manager)
     {
-        $this->createOne(User::class, function (User $user) {
+        $this->createOne(User::class, function (User $user) use ($manager) {
             $user
                 ->setFirstName('api')
                 ->setEmail('api@symfony.skillbox')
@@ -32,9 +33,13 @@ class UserFixtures extends BaseFixtures
                 ->setRoles(['ROLE_API'])
                 ->setIsActive(true)
             ;
+
+            for ($i = 0; $i < 3; $i++) {
+                $manager->persist(new ApiToken($user));
+            }
         });
 
-        $this->createOne(User::class, function (User $user) {
+        $this->createOne(User::class, function (User $user) use ($manager) {
             $user
                 ->setFirstName('admin')
                 ->setEmail('admin@symfony.skillbox')
@@ -42,9 +47,11 @@ class UserFixtures extends BaseFixtures
                 ->setRoles(['ROLE_ADMIN'])
                 ->setIsActive(true)
             ;
+
+            $manager->persist(new ApiToken($user));
         });
 
-        $this->createMany(User::class, 10, function (User $user) {
+        $this->createMany(User::class, 10, function (User $user) use ($manager) {
             $user
                 ->setFirstName($this->faker->firstName)
                 ->setEmail($this->faker->email)
@@ -52,6 +59,8 @@ class UserFixtures extends BaseFixtures
                 ->setRoles(['ROLE_USER'])
                 ->setIsActive($this->faker->boolean(70))
             ;
+
+            $manager->persist(new ApiToken($user));
         });
 
         $manager->flush();

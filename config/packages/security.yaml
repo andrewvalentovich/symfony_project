@@ -29,6 +29,8 @@ security:
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800
+            custom_authenticators:
+                - App\Security\ApiTokenAuthenticator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
