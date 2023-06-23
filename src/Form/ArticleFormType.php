@@ -7,11 +7,14 @@ use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class ArticleFormType extends AbstractType
 {
@@ -19,7 +22,6 @@ class ArticleFormType extends AbstractType
      * @var UserRepository
      */
     private $userRepository;
-
 
     /**
      * ArticleFormType constructor.
@@ -31,7 +33,30 @@ class ArticleFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var Article|null $article */
+        $article = $options['data'] ?? null;
+
+        $imageContsraints = [
+            new Image([
+                'maxSize'   =>  '2M',
+                'minHeight' =>  '300',
+                'minWidth'  =>  '480',
+                'allowPortrait'    =>  'false'
+            ])
+        ];
+
+        if (! $article || ! $article->getImageFilename()) {
+            $imageContsraints = new NotNull([
+                'message'    =>  'Не выбрано изображение статьи'
+            ]);
+        }
+
         $builder
+            ->add('image', FileType::class, [
+                'mapped' => false,
+                'required' => false,
+                'constraints' => $imageContsraints
+            ])
             ->add('title', null, [
                 'label'   =>  'Название статьи',
                 'required'  =>  'false',

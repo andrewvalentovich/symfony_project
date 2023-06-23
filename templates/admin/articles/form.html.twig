@@ -1,4 +1,12 @@
 {{ form_start(articleForm, { attr: {novalidate: 'novalidate'} }) }}
+
+    {% if articleForm.vars.data.imageFilename|default %}
+        <img src="{{ uploaded_asset('article_uploads', articleForm.vars.data.imageFilename)|imagine_filter('article_preview') }}">
+    {% endif %}
+
+    {{ form_row(articleForm.image, {
+        'label': 'Изображение статьи'
+    }) }}
     {{ form_row(articleForm.title, {
         'label': 'Заголовок статьи'
     }) }}

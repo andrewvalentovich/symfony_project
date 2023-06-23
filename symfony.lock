@@ -1,4 +1,47 @@
 {
+    "imagine/imagine": {
+        "version": "1.2.4"
+    },
+    "league/flysystem": {
+        "version": "1.1.5"
+    },
+    "league/mime-type-detection": {
+        "version": "1.8.0"
+    },
+    "liip/imagine-bundle": {
+        "version": "1.8",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.8",
+            "ref": "ffbb72e74598f04cc7f79f9fc736c77eeb98f569"
+        },
+        "files": [
+            "./config/packages/liip_imagine.yaml",
+            "./config/routes/liip_imagine.yaml"
+        ]
+    },
+    "oneup/flysystem-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "e6c6440b279273a468e1f570b0fc1d4ff54ad69e"
+        },
+        "files": [
+            "./config/packages/oneup_flysystem.yaml"
+        ]
+    },
+    "symfony/mime": {
+        "version": "v5.3.7"
+    },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.23.0"
+    },
+    "symfony/process": {
+        "version": "v5.3.7"
+    },
     "symfony/validator": {
         "version": "4.3",
         "recipe": {

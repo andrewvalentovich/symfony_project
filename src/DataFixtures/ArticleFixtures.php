@@ -8,23 +8,30 @@ use App\Entity\Tag;
 use App\Entity\User;
 use App\Homework\ArticleContentProvider;
 use App\Homework\CommentContentProvider;
+use App\Service\FileUploader;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\File\File;
 
 class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
 {
-
-    static $titleArray = [
-        'Три предметно-ориентированных языка программирования для цифровой обработки сигналов',
-        'Как составить ТЗ, чтобы не пришлось икать?',
-        'Как создать 3d игру прямо в браузере'
+    private static $articleTitles = [
+        'Есть ли жизнь после девятой жизни?',
+        'Когда в машинах поставят лоток?',
+        'В погоне за красной точкой',
+        'В чем смысл жизни сосисок',
     ];
 
-    static $filenameArray = [
-        'images/article-1.jpeg',
-        'images/article-2.jpeg',
-        'images/article-3.jpg'
+    private static $articleImages = [
+        'article-1.jpeg',
+        'article-2.jpeg',
+        'article-3.jpg',
     ];
+
+    /**
+     * @var FileUploader
+     */
+    private $articleFileUploader;
 
     /**
      * ArticleFixtures constructor.
@@ -32,17 +39,22 @@ class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
     private $commentContentProvider;
     private $articleContentProvider;
 
-    public function __construct(CommentContentProvider $commentContentProvider, ArticleContentProvider $articleContentProvider)
+    public function __construct(
+        CommentContentProvider $commentContentProvider,
+        ArticleContentProvider $articleContentProvider,
+        FileUploader $articleFileUploader
+    )
     {
         $this->commentContentProvider = $commentContentProvider;
         $this->articleContentProvider = $articleContentProvider;
+        $this->articleFileUploader = $articleFileUploader;
     }
 
     public function loadData(ObjectManager $manager)
     {
         $this->createMany(Article::class, 25, function($article) use ($manager) {
             $article
-                ->setTitle($this->faker->randomElement(self::$titleArray))
+                ->setTitle($this->faker->randomElement(self::$articleTitles))
                 ->setDescription($this->faker->realText(100, 1))
                 ->setBody($this->generateContent())
                 ->setKeywords($this->generateKeywords($this->faker->numberBetween(1, 4)));
@@ -51,10 +63,12 @@ class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
                 $article->setPublishedAt($this->faker->dateTimeBetween('-100 days', '-1 days'));
             }
 
+            $fileName = $this->faker->randomElement(self::$articleImages);
+
             $article
                 ->setAuthor($this->getRandomReference(User::class))
                 ->setVoteCount(rand(0, 10))
-                ->setImageFilename($this->faker->randomElement(self::$filenameArray))
+                ->setImageFilename($this->articleFileUploader->uploadFile(new File(dirname(dirname(__DIR__)) . '/public/images/' . $fileName, $fileName)))
             ;
 
             /** @var Tag[] $tags */

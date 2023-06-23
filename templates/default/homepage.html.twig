@@ -13,7 +13,7 @@
                         <div class="article-container mb-2">
                             <div class="row no-gutters border flex-md-row p-3 mb-4 shadow-sm">
                                 <div class="col-auto d-block">
-                                    <img class="article-img" src="{{ asset(article.imageFilename) }}">
+                                    <img class="article-img" src="{{ uploaded_asset('article_uploads', article.imageFilename)|imagine_filter('article_preview') }}">
                                 </div>
                                 <a class="col px-4 d-flex flex-column article-item" href="{{ path('app_article_page', { slug : article.slug }) }}">
                                     <h5 class="mb-2">{{ article.title }}</h5>

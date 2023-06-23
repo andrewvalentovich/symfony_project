@@ -6,11 +6,13 @@ use App\Entity\Article;
 use App\Form\ArticleFormType;
 use App\Homework\ArticleWordsFilter;
 use App\Repository\ArticleRepository;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,8 +42,12 @@ class ArticlesController extends AbstractController
      * @Route("/admin/articles/create", name="app_admin_articles_create")
      * @IsGranted("ROLE_ADMIN_ARTICLE")
      */
-    public function create(EntityManagerInterface $em, Request $request, ArticleWordsFilter $filter)
-    {
+    public function create(
+        EntityManagerInterface $em,
+        Request $request,
+        ArticleWordsFilter $filter,
+        FileUploader $articleFileUploader
+    ) {
         $form = $this->createForm(ArticleFormType::class);
 
         $filenameArray = [
@@ -50,7 +56,7 @@ class ArticlesController extends AbstractController
             'images/article-3.jpg'
         ];
 
-        if ($article = $this->handleFormRequest($em, $request, $form, $filter, $filenameArray, true)) {
+        if ($article = $this->handleFormRequest($em, $request, $form, $articleFileUploader, $filter, true)) {
             $this->addFlash('flash_message', 'Статья успешно создана');
             return $this->redirectToRoute('app_admin_articles');
         }
@@ -67,16 +73,20 @@ class ArticlesController extends AbstractController
      * @Route("/admin/articles/{id}/edit", name="app_admin_articles_edit")
      * @IsGranted("VOTER_ARTICLE_EDIT", subject="article")
      */
-    public function edit(EntityManagerInterface $em, Request $request, Article $article)
-    {
+    public function edit(
+        EntityManagerInterface $em,
+        Request $request,
+        Article $article,
+        FileUploader $articleFileUploader
+    ) {
         $form = $this->createForm(ArticleFormType::class, $article);
 
-        if ($article = $this->handleFormRequest($em, $request, $form)) {
+        if ($article = $this->handleFormRequest($em, $request, $form, $articleFileUploader)) {
             $this->addFlash('flash_message', 'Статья успешно изменена');
             return $this->redirectToRoute('app_admin_articles_edit', ['id'  =>  $article->getId()]);
         }
 
-        return $this->render('admin/articles/create.html.twig', [
+        return $this->render('admin/articles/edit.html.twig', [
             'articleForm' => $form->createView(),
             'showError' =>  $form->isSubmitted(),
         ]);
@@ -86,8 +96,8 @@ class ArticlesController extends AbstractController
         EntityManagerInterface $em,
         Request $request,
         FormInterface $form,
+        FileUploader $fileUploader,
         ArticleWordsFilter $filter = null,
-        array $filenameArray = null,
         bool $articleFilter = false
     ) {
         $form->handleRequest($request);
@@ -97,10 +107,14 @@ class ArticlesController extends AbstractController
             /** @var Article $article */
             $article = $form->getData();
 
-            if ($articleFilter) {
-                $article->setImageFilename($filenameArray[rand(0, count($filenameArray)-1)]);
-                $words = ['стакан', 'жук', 'точка'];
+            /** @var UploadedFile|null $image */
+            $image = $form->get('image')->getData();
+            if ($image) {
+                $article->setImageFilename($fileUploader->uploadFile($image, $article->getImageFilename()));
+            }
 
+            if ($articleFilter) {
+                $words = ['стакан', 'жук', 'точка'];
                 $title = $article->getTitle();
                 $body = $article->getBody();
                 $article->setTitle($filter->filter($title, $words));
@@ -112,5 +126,7 @@ class ArticlesController extends AbstractController
 
             return $article;
         }
+
+        return null;
     }
 }
