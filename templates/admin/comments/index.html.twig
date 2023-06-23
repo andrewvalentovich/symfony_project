@@ -19,6 +19,15 @@
                 <button type="submit" class="btn btn-outline-secondary"><i class="fa fa-search"></i></button>
             </div>
         </div>
+        <div class="form-check">
+            <input type="checkbox"
+                   class="form-check-input"
+                   id="showDeleted"
+                   name="showDeleted"
+                    {% if app.request.query.has('showDeleted') %} checked {% endif %}
+            >
+            <label class="form-check-label" for="showDeleted">Show DELETED comments</label>
+        </div>
     </form>
 
 
@@ -36,12 +45,12 @@
             <tr>
                 <td>
                     <a href="#">
-                        {{ comment.articleTitle }}
+                        {{ comment.article.title }}
                     </a>
                 </td>
                 <td>{{ comment.authorName }}</td>
-                <td style="width: 20%;">{{ comment.comment|u.truncate(40, '...') }}</td>
-                <td>{{ comment.createdAt|ago }}</td>
+                <td style="width: 20%;">{{ comment.content|u.truncate(40, '...') }}</td>
+                <td>{% if comment.deletedAt %}DELETED {% endif %}{{ comment.createdAt|ago }}</td>
             </tr>
         {% else %}
             <tr>

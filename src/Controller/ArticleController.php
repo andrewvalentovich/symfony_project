@@ -19,8 +19,12 @@ class ArticleController extends AbstractController
      */
     public function article_page($slug, ArticleRepository $repository)
     {
+        $article = $repository->findOneBy(array('slug' => $slug));
+        $comments = $article->getComments();
+
         return $this->render('article/article.html.twig', [
-            'article'       =>      $repository->findOneBy(array('slug' => $slug))
+            'article'       =>      $article,
+            'comments'      =>      $comments,
         ]);
     }
 
