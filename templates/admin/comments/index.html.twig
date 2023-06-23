@@ -5,31 +5,13 @@
 {% block base_row_class %} {{ parent() }} position-relative rounded-lg overflow-hidden {% endblock %}
 {% block base_col_class %} {{ parent() }} {% endblock %}
 {% block content %}
-    <h1>Управление комментариями</h1>
+    <h1>Управление комментариями ({{ pagination.totalItemCount }})</h1>
 
-    <form>
-        <div class="input-group mb-3">
-            <input type="text"
-                   name="q"
-                   class="form-control"
-                   placeholder="Найти..."
-                   value="{{ app.request.query.get('q') }}"
-            >
-            <div class="input-group-append">
-                <button type="submit" class="btn btn-outline-secondary"><i class="fa fa-search"></i></button>
-            </div>
-        </div>
-        <div class="form-check">
-            <input type="checkbox"
-                   class="form-check-input"
-                   id="showDeleted"
-                   name="showDeleted"
-                    {% if app.request.query.has('showDeleted') %} checked {% endif %}
-            >
-            <label class="form-check-label" for="showDeleted">Show DELETED comments</label>
-        </div>
-    </form>
-
+    {% include '/admin/form.twig' with {
+        q: app.request.query.get('q'),
+        countView: app.request.query.get('countView'),
+        showDeleted: app.request.query.has('showDeleted')
+    } %}
 
     <table class="table table-striped">
         <thead>
@@ -41,7 +23,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for comment in comments %}
+        {% for comment in pagination %}
             <tr>
                 <td>
                     <a href="#">
@@ -59,4 +41,6 @@
         {% endfor %}
         </tbody>
     </table>
+    {{ knp_pagination_render(pagination) }}
+
 {% endblock %}

@@ -9,25 +9,24 @@
                 <div class="row">
                     <div class="col-md-12 col-xl-8">
 
-                        {% for articles in articles %}
+                        {% for article in articles %}
                         <div class="article-container mb-2">
                             <div class="row no-gutters border flex-md-row p-3 mb-4 shadow-sm">
                                 <div class="col-auto d-block">
-                                    <img class="article-img" src="{{ asset(articles.imageFilename) }}">
+                                    <img class="article-img" src="{{ asset(article.imageFilename) }}">
                                 </div>
-                                <a class="col px-4 d-flex flex-column article-item" href="{{ path('app_article_page', { slug : articles.slug }) }}">
-                                    <h5 class="mb-2">{{ articles.title }}</h5>
+                                <a class="col px-4 d-flex flex-column article-item" href="{{ path('app_article_page', { slug : article.slug }) }}">
+                                    <h5 class="mb-2">{{ article.title }}</h5>
                                     <div class="d-flex mb-2">
-                                        <div class="text-muted align-self-center"><img class="article-author-img rounded-circle" src="https://robohash.org/{{ articles.author }}.png?set=set{{ articles.slug }}">{{ articles.author }}</div>
-                                        <div class="text-muted align-self-center ml-3"><i class="fas fa-clock size-is-"></i>{{ articles.publishedAt|ago }}</div>
+                                        <div class="text-muted align-self-center"><img class="article-author-img rounded-circle" src="https://robohash.org/{{ article.author }}.png?set=set{{ article.slug }}">{{ article.author }}</div>
+                                        <div class="text-muted align-self-center ml-3"><i class="fas fa-clock size-is-"></i>{{ article.publishedAt|ago }}</div>
                                     </div>
-                                    <div class="mb-2 d-flex">
-                                        <span class="badge badge-primary mr-2"><i class="fas fa-comment"></i> {{ articles.comments|length }}</span>
-                                        <span class="badge badge-pill badge-secondary mr-2">Html</span>
-                                        <span class="badge badge-pill badge-secondary mr-2">Css</span>
+                                      <div class="mb-2 d-flex">
+                                          <span class="badge badge-primary mr-2"><i class="fas fa-comment"></i> {{ article.comments|length }}</span>
+                                          {% include '@partial/tags_show.twig' with {tags: article.tags} %}
                                     </div>
                                     <div class="mb-2 text-muted">
-                                        <p>{{ articles.description|cached_markdown }}</p>
+                                        <p>{{ article.description|cached_markdown }}</p>
                                     </div>
                                 </a>
                             </div>

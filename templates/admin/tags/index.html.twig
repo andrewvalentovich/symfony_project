@@ -1,0 +1,50 @@
+{% extends 'base_content.html.twig' %}
+
+{% block title %}Управление тэгами{% endblock %}
+
+{% block base_row_class %} {{ parent() }} position-relative rounded-lg overflow-hidden {% endblock %}
+{% block base_col_class %} {{ parent() }} {% endblock %}
+{% block content %}
+    <h1>Управление тэгами ({{ pagination.totalItemCount }})</h1>
+
+    {% include '/admin/form.twig' with {
+        q: app.request.query.get('q'),
+        countView: app.request.query.get('countView'),
+        showDeleted: app.request.query.has('showDeleted')
+    } %}
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Имя тэга</th>
+            <th>Код</th>
+            <th>Статус</th>
+            <th>Количество</th>
+            <th>Статьи содержащие тэг</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for tag in pagination %}
+            <tr>
+                <td>
+                    {{ tag.name }}
+                </td>
+                <td>{{ tag.slug }}</td>
+                <td>{% if tag.deletedAt %} DELETED {% else %} SET {% endif %}</td>
+                <td>{{ tag.articles|length }}</td>
+                <td>
+                    {% for article in tag.articles %}
+                        <p>{{ article.title }}</p>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Нет тэгов</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ knp_pagination_render(pagination) }}
+{% endblock %}

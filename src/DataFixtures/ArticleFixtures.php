@@ -4,11 +4,13 @@ namespace App\DataFixtures;
 
 use App\Entity\Article;
 use App\Entity\Comment;
+use App\Entity\Tag;
 use App\Homework\ArticleContentProvider;
 use App\Homework\CommentContentProvider;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class ArticleFixtures extends BaseFixtures
+class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
 {
 
     static $titleArray = [
@@ -60,8 +62,15 @@ class ArticleFixtures extends BaseFixtures
                 ->setImageFilename($this->faker->randomElement(self::$filenameArray))
             ;
 
-            $manager->persist($article);
+            /** @var Tag[] $tags */
+            $tags = [];
+            for ($i = 0; $i < $this->faker->numberBetween(0, 5); $i++) {
+                $tags[] = $this->getRandomReference(Tag::class);
+            }
 
+            foreach ($tags as $tag) {
+                $article->addTag($tag);
+            }
 
             for ($i = 0; $i < $this->faker->numberBetween(2, 10); $i++) {
                 $this->generateComments($article, $manager);
@@ -117,6 +126,13 @@ class ArticleFixtures extends BaseFixtures
         }
 
         return $text;
+    }
+
+    public function getDependencies()
+    {
+        return [
+            TagFixtures::class,
+        ];
     }
 
 }
