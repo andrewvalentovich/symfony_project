@@ -1,0 +1,9 @@
+POST https://localhost:8000/api/v1/article_content/
+Accept: application/json
+Cache-Control: no-cache
+
+{
+  "paragraphs": 3,
+  "word": "Hello",
+  "wordCount": 2
+}
