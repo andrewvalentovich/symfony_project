@@ -1,0 +1,9 @@
+{% extends 'base_content.html.twig' %}
+
+{% block title %}Hello ArticlesCreateController!{% endblock %}
+
+{% block content %}
+
+    {{ article.body|cached_markdown }}
+
+{% endblock %}

@@ -11,6 +11,6 @@ import './styles/app.css';
 // start the Stimulus application
 
 import $ from "jquery";
-require("bootstrap");
-
+require('bootstrap');
+require('./vote.js');
 //import './bootstrap';

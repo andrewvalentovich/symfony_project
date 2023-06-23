@@ -5,6 +5,7 @@
 namespace App\Controller;
 use App\Homework\ArticleContentProvider;
 use App\Homework\ArticleProvider;
+use App\Repository\ArticleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,29 +15,14 @@ use Symfony\Component\HttpFoundation\Request;
 class ArticleController extends AbstractController
 {
     /**
-     * @Route("/article/{id}", name="app_article_page")
+     * @Route("/article/{slug}", name="app_article_page")
      */
-    public function article_page(Environment $twig, ArticleProvider $articleProvider, $id, ArticleContentProvider $articleContentProvider)
+    public function article_page($slug, ArticleRepository $repository)
     {
-
-        $wordArray = ['я', 'Андрей', 'ты', 'человек', 'самый', 'умный', 'вид', 'животных'];
-
-        $word = NULL;
-        $wordCount = 0;
-
-        if(rand(0, 10) <= 7) {
-            $word = $wordArray[rand(0, 7)];
-            $wordCount = rand(2, 12);
-        }
-
-        $contentText = $articleContentProvider->get(rand(2, 10), $word, $wordCount);
-
         return $this->render('article/article.html.twig', [
-            'article'       =>      $articleProvider->article(),
-            'content'       =>      $contentText
+            'article'       =>      $repository->findOneBy(array('slug' => $slug))
         ]);
     }
-
 
     /**
      * @Route("/api/v1/article_content/", name="app_article_content", methods={"POST"})

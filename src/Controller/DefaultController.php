@@ -2,20 +2,22 @@
 
 
 namespace App\Controller;
-use App\Homework\ArticleProvider;
+
+use App\Repository\ArticleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Twig\Environment;
 
 class DefaultController extends AbstractController
 {
     /**
     * @Route("/", name="app_homepage")
     */
-    public function homepage(Environment $twig, ArticleProvider $articleProvider)
+    public function homepage(ArticleRepository $repository)
     {
+        $articles = $repository->getPublishedLatest();
+
         return $this->render('default/homepage.html.twig', [
-            "articles"      => $articleProvider->articles(),
+            "articles"      => $articles,
         ]);
     }
 }

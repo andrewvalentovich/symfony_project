@@ -1,22 +1,23 @@
 {% extends 'base_content.html.twig' %}
 
+{% block keywords %}{{ article.keywords }}{% endblock %}
 {% block title %}
-    Статья №{{ article.slug }}: {{ article.title }}
+    {{ article.title }} - Spill-Coffee-On-The-Keyboard
 {% endblock %}
 {% block base_row_class %} {{ parent() }} bg-white no-gutters featured-border {% endblock %}
 {% block base_col_class %} article-detail {% endblock %}
 {% block content %}
     <div class="col-sm-12 p-2">
         <div class="media d-flex align-content-center">
-            <img class="article-detail-image align-self-start mr-3 rounded" src="{{ asset(article.image) }}">
+            <img class="article-detail-image align-self-start mr-3 rounded" src="{{ asset(article.imageFilename) }}">
             <div class="media-body d-inline-block align-self-center">
                 <h1 class="mb-2">{{ article.title }}</h1>
                 <div class="d-flex mb-2">
                     <div class="text-muted align-self-center">
-                        <img class="article-author-img rounded-circle mr-2" src="https://robohash.org/флекс_абсолютович.jpg?set=set3">
-                        Флекс Абсолютович
+                        <img class="article-author-img rounded-circle mr-2" src="https://robohash.org/{{ article.author }}.jpg?set=set3">
+                        {{ article.author }}
                     </div>
-                    <div class="text-muted align-self-center ml-4"><i class="fas fa-clock size-is-"></i> 1 месяц назад</div>
+                    <div class="text-muted align-self-center ml-4"><i class="fas fa-clock size-is-"></i>{{ article.publishedAt|ago }}</div>
                 </div>
                 <div class="mb-2 d-flex">
                     <span class="badge badge-pill badge-secondary mr-2">Балбес</span>
@@ -24,10 +25,10 @@
                     <span class="badge badge-pill badge-secondary mr-2">Рукопоп</span>
                 </div>
                 <div class="mb-2">
-                    <div class="text-muted align-self-center article-detail-arrows">
-                        120
-                        <button class="btn btn-success ml-3"><i class="fas fa-arrow-up"></i></button>
-                        <button class="btn btn-danger"><i class="fas fa-arrow-down"></i></button>
+                    <div data-id="voteBlock" class="text-muted align-self-center article-detail-arrows">
+                        <span class="voteCount {{ (article.voteCount > 0) ? 'text-success' }} {{ (article.voteCount < 0) ? 'text-danger' }}" data-id="voteCount">{{ article.voteCount }}</span>
+                        <button class="btn btn-success ml-3" data-href="{{ path('app_voting', { slug: article.slug, type: 'up'}) }}" data-id="voteButton"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn btn-danger" data-href="{{ path('app_voting', { slug: article.slug, type: 'down'}) }}" data-id="voteButton"><i class="fas fa-arrow-down"></i></button>
                     </div>
                 </div>
             </div>
@@ -36,7 +37,7 @@
 
 
     <div class="col-12 mt-2 mb-4">
-        {{ content|cached_markdown }}
+        {{ article.body|cached_markdown }}
     </div>
 
 

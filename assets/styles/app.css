@@ -32,7 +32,6 @@ body {
 }
 
 .article-item {
-    max-height: 150px;
     overflow: hidden;
 }
 .article-container {
@@ -63,6 +62,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.text-muted p{
+    margin-bottom: 0!important;
 }
 
 @import "./detail.css";
