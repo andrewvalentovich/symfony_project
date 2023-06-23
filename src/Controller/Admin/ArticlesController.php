@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Article;
+use App\Events\ArticleCreatedEvent;
 use App\Form\ArticleFormType;
 use App\Homework\ArticleWordsFilter;
 use App\Repository\ArticleRepository;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ArticlesController extends AbstractController
 {
@@ -46,7 +48,8 @@ class ArticlesController extends AbstractController
         EntityManagerInterface $em,
         Request $request,
         ArticleWordsFilter $filter,
-        FileUploader $articleFileUploader
+        FileUploader $articleFileUploader,
+        EventDispatcherInterface $dispatcher
     ) {
         $form = $this->createForm(ArticleFormType::class);
 
@@ -56,11 +59,19 @@ class ArticlesController extends AbstractController
             'images/article-3.jpg'
         ];
 
-        if ($article = $this->handleFormRequest($em, $request, $form, $articleFileUploader, $filter, true)) {
+
+        if ($article = $this->handleFormRequest(
+            $em,
+            $request,
+            $form,
+            $articleFileUploader,
+            $filter,
+            $dispatcher,
+            true
+        )) {
             $this->addFlash('flash_message', 'Статья успешно создана');
             return $this->redirectToRoute('app_admin_articles');
         }
-
 
         return $this->render('admin/articles/create.html.twig', [
             'articleForm' => $form->createView(),
@@ -98,6 +109,7 @@ class ArticlesController extends AbstractController
         FormInterface $form,
         FileUploader $fileUploader,
         ArticleWordsFilter $filter = null,
+        EventDispatcherInterface $dispatcher = null,
         bool $articleFilter = false
     ) {
         $form->handleRequest($request);
@@ -123,6 +135,10 @@ class ArticlesController extends AbstractController
 
             $em->persist($article);
             $em->flush();
+
+            if ($dispatcher !== null) {
+                $dispatcher->dispatch(new ArticleCreatedEvent($article));
+            }
 
             return $article;
         }

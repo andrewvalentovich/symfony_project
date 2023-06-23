@@ -21,6 +21,7 @@
         "oneup/flysystem-bundle": "^3.7",
         "phpdocumentor/reflection-docblock": "^5.2",
         "phpoffice/phpspreadsheet": "^1.18",
+        "scienta/doctrine-json-functions": "^4.4",
         "sensio/framework-extra-bundle": "^6.1",
         "stof/doctrine-extensions-bundle": "^1.6",
         "symfony/asset": "5.3.*",

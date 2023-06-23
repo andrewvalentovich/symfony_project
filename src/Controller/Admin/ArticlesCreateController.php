@@ -3,14 +3,19 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Article;
+use App\Events\ArticleCreatedEvent;
 use App\Homework\ArticleContentProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ArticlesCreateController extends AbstractController
 {
-    public function articlesCreate(ArticleContentProvider $articleContentProvider, EntityManagerInterface $em)
-    {
+    public function articlesCreate(
+        ArticleContentProvider $articleContentProvider,
+        EntityManagerInterface $em,
+        EventDispatcherInterface $dispatcher
+    ) {
         $wordArray = ['статья', 'новость', 'ИТ', 'технологии', 'инженерия', 'роботы', 'производство', 'хакинг'];
 
         $word = (rand(0, 10) <= 7) ? $wordArray[rand(0, 7)] : null;

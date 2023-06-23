@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Events\UserRegisteredEvent;
 use App\Form\Model\UserRegistrationFormModel;
 use App\Form\UserRegistrationFormType;
 use App\Security\LoginAuthenticator;
@@ -10,13 +11,13 @@ use App\Service\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\Mime\Address;
 
 class SecurityController extends AbstractController
 {
@@ -46,7 +47,8 @@ class SecurityController extends AbstractController
         GuardAuthenticatorHandler $guard,
         LoginAuthenticator $loginAuthenticator,
         EntityManagerInterface $em,
-        Mailer $mailer
+        Mailer $mailer,
+        EventDispatcherInterface $dispatcher
     ) {
         $form = $this->createForm(UserRegistrationFormType::class);
         $form->handleRequest($request);
@@ -68,22 +70,10 @@ class SecurityController extends AbstractController
                 ->setEmailWeeklyNewsletterSub($subStatus = ($userModel->agreeTerms) ? true : false)
             ;
 
-            $mailer->sendMail(
-                $user->getEmail(),
-                $user->getFirstName(),
-                'Spill-Coffee-On-The-Keyboard',
-                'email/welcome.html.twig',
-                function (TemplatedEmail $email) use ($user){
-                    $email
-                        ->context([
-                            'user'  =>  $user
-                        ])
-                    ;
-                }
-            );
-
             $em->persist($user);
             $em->flush();
+
+            $dispatcher->dispatch(new UserRegisteredEvent($user));
 
             return $guard->authenticateUserAndHandleSuccess(
                 $user,

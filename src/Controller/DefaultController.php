@@ -13,14 +13,12 @@ class DefaultController extends AbstractController
     /**
     * @Route("/", name="app_homepage")
     */
-    public function homepage(ArticleRepository $articleRepository, CommentRepository $commentRepository)
+    public function homepage(ArticleRepository $articleRepository)
     {
         $articles = $articleRepository->getPublishedLatest();
-        $comments = $commentRepository->findLastOrderByCreatedAt(3);
 
         return $this->render('default/homepage.html.twig', [
             "articles"      => $articles,
-            "comments"      => $comments,
         ]);
     }
 }

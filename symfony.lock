@@ -69,6 +69,9 @@
     "psr/simple-cache": {
         "version": "1.0.1"
     },
+    "scienta/doctrine-json-functions": {
+        "version": "4.4.0"
+    },
     "symfony/css-selector": {
         "version": "v5.3.4"
     },
