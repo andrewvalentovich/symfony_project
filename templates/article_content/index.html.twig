@@ -1,0 +1,29 @@
+{% extends 'base_content.html.twig' %}
+
+{% block title %}Генерация контента статьи{% endblock %}
+
+{% block content %}
+<style>
+    form{
+        padding: 0.5em 0;
+    }
+</style>
+
+    <form method="get" action="/articles/article_content/">
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Введите число параграфов</label>
+            <input required name="paragraphs" type="text" class="form-control" id="articleContentParagraphs" value="{{ app.request.query.get('paragraphs') }}">
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Введите слово, которое хотите вставить в текст</label>
+            <input name="word" type="text" class="form-control" id="articleContentWord" value="{{ app.request.query.get('word') }}">
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Введите количество слов, которое хотите вставить в текст</label>
+            <input name="wordCount" type="text" class="form-control" id="articleContentCount" value="{{ app.request.query.get('wordCount') }}">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Отправить</button>
+    </form>
+
+    <p class="font-weight-normal">{{ content|cached_markdown }}</p>
+{% endblock %}
