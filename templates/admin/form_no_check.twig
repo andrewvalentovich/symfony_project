@@ -1,0 +1,22 @@
+<form>
+    <div class="input-group mb-3">
+        <input type="text"
+               name="q"
+               class="form-control"
+               placeholder="Найти..."
+               value="{{ q }}"
+        >
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-outline-secondary"><i class="fa fa-search"></i></button>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-check-label" for="countView">Count of view</label>
+        <select class="form-control" id="countView" name="countView">
+            <option {% if countView == '20s'%}selected{% endif %} value="20s">По умолчанию</option>
+            <option {% if countView == '10' %}selected{% endif %} value="10">10</option>
+            <option {% if countView == '20' %}selected{% endif %} value="20">20</option>
+            <option {% if countView == '50' %}selected{% endif %} value="50">50</option>
+        </select>
+    </div>
+</form>

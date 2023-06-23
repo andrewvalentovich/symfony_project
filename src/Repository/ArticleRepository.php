@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -32,6 +33,35 @@ class ArticleRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
+
+    public function findAllWithSoftDelNoResult(string $search = null)
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->leftJoin('a.author', 'h')
+            ->addSelect('h');
+
+        if ($search != null) {
+            $qb
+                ->andWhere('a.title LIKE :search OR a.body LIKE :search OR h.firstName LIKE :search')
+                ->setParameter('search', "%$search%")
+            ;
+        }
+
+        return $qb
+            ->orderBy('a.publishedAt', 'DESC')
+            ;
+    }
+
+    private function getOrCreateQueryBuilder(QueryBuilder $qb = null): QueryBuilder
+    {
+        return $qb ?? $this->createQueryBuilder('a');
+    }
+
+    public function latest(QueryBuilder $qb = null)
+    {
+        return $this->getOrCreateQueryBuilder($qb)->orderBy('a.publishedAt', 'DESC');
+    }
+
 
     // /**
     //  * @return Article[] Returns an array of Article objects

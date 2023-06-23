@@ -43,9 +43,9 @@ class ArticlesCreateController extends AbstractController
         ];
 
         $filenameArray = [
-            'article-1.jpeg',
-            'article-2.jpeg',
-            'article-3.jpg'
+            'images/article-1.jpeg',
+            'images/article-2.jpeg',
+            'images/article-3.jpg'
         ];
 
 
