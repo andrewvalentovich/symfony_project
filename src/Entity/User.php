@@ -66,6 +66,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $articles;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $emailWeeklyNewsletterSub;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -255,6 +260,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $article->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEmailWeeklyNewsletterSub(): ?bool
+    {
+        return $this->emailWeeklyNewsletterSub;
+    }
+
+    public function setEmailWeeklyNewsletterSub(?bool $emailWeeklyNewsletterSub): self
+    {
+        $this->emailWeeklyNewsletterSub = $emailWeeklyNewsletterSub;
 
         return $this;
     }

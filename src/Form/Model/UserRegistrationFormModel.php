@@ -11,7 +11,6 @@ class UserRegistrationFormModel
 {
     /**
      * @Assert\NotBlank(message="Это поле является обязательным")
-     * @RegistrationSpam()
      * @UniqueFilter()
      */
     public $email;

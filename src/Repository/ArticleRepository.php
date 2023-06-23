@@ -22,7 +22,7 @@ class ArticleRepository extends ServiceEntityRepository
 
     public function getPublishedLatest()
     {
-        return $this->createQueryBuilder('a')
+        return $this->latest()
             ->andWhere('a.publishedAt IS NOT NULL')
             ->orderBy('a.publishedAt', 'DESC')
             ->leftJoin('a.comments', 'c')
@@ -31,6 +31,38 @@ class ArticleRepository extends ServiceEntityRepository
             ->addSelect('t')
             ->leftJoin('a.author', 'u')
             ->addSelect('u')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findAllPublishedLastWeek()
+    {
+        return $this->published($this->latest())
+            ->andWhere('a.publishedAt >= :week_ago')
+            ->setParameter(':week_ago', new \DateTime('-1 week'))
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findAllPublishedByParams(\DateTime $dateFrom, \DateTime $dateTo)
+    {
+        return $this->published($this->latest())
+            ->andWhere('a.publishedAt >= :dateFrom AND a.publishedAt <= :dateTo')
+            ->setParameter(':dateFrom', $dateFrom)
+            ->setParameter(':dateTo', $dateTo)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findAllCreatedByParams(\DateTime $dateFrom, \DateTime $dateTo)
+    {
+        return $this->latest()
+            ->andWhere('a.createdAt >= :dateFrom AND a.createdAt <= :dateTo')
+            ->setParameter(':dateFrom', $dateFrom)
+            ->setParameter(':dateTo', $dateTo)
             ->getQuery()
             ->getResult()
             ;
@@ -62,6 +94,11 @@ class ArticleRepository extends ServiceEntityRepository
     public function latest(QueryBuilder $qb = null)
     {
         return $this->getOrCreateQueryBuilder($qb)->orderBy('a.publishedAt', 'DESC');
+    }
+
+    public function published(QueryBuilder $qb = null)
+    {
+        return $this->getOrCreateQueryBuilder($qb)->andWhere('a.publishedAt IS NOT NULL');
     }
 
 

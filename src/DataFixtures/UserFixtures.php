@@ -32,6 +32,7 @@ class UserFixtures extends BaseFixtures
                 ->setPassword($this->userPasswordEncoder->encodePassword($user, '123'))
                 ->setRoles(['ROLE_API'])
                 ->setIsActive(true)
+                ->setEmailWeeklyNewsletterSub(true)
             ;
 
             for ($i = 0; $i < 3; $i++) {
@@ -46,6 +47,7 @@ class UserFixtures extends BaseFixtures
                 ->setPassword($this->userPasswordEncoder->encodePassword($user, '123'))
                 ->setRoles(['ROLE_ADMIN'])
                 ->setIsActive(true)
+                ->setEmailWeeklyNewsletterSub(true)
             ;
 
             $manager->persist(new ApiToken($user));
@@ -58,6 +60,7 @@ class UserFixtures extends BaseFixtures
                 ->setPassword($this->userPasswordEncoder->encodePassword($user, '123'))
                 ->setRoles(['ROLE_USER'])
                 ->setIsActive($this->faker->boolean(70))
+                ->setEmailWeeklyNewsletterSub($this->faker->boolean(50))
             ;
 
             $manager->persist(new ApiToken($user));
