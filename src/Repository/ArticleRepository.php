@@ -28,7 +28,6 @@ class ArticleRepository extends ServiceEntityRepository
             ->addSelect('c')
             ->leftJoin('a.tags', 't')
             ->addSelect('t')
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult()
             ;
