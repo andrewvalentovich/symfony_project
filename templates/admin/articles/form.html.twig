@@ -1,0 +1,23 @@
+{{ form_start(articleForm, { attr: {novalidate: 'novalidate'} }) }}
+    {{ form_row(articleForm.title, {
+        'label': 'Заголовок статьи'
+    }) }}
+    {{ form_row(articleForm.description, {
+        'label': 'Описание статьи'
+    }) }}
+    {{ form_row(articleForm.body, {
+        'label': 'Контент статьи'
+    }) }}
+    {{ form_row(articleForm.publishedAt, {
+        'label': 'Время публикации статьи'
+    }) }}
+    {{ form_row(articleForm.keywords, {
+        'label': 'Ключевые слова статьи'
+    }) }}
+    {{ form_row(articleForm.author, {
+        'label': 'Автор статьи'
+    }) }}
+
+    <button type="submit" class="btn btn-primary">{{ button_text }}</button>
+
+{{ form_end(articleForm) }}

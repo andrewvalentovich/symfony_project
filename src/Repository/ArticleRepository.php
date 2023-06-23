@@ -29,6 +29,8 @@ class ArticleRepository extends ServiceEntityRepository
             ->addSelect('c')
             ->leftJoin('a.tags', 't')
             ->addSelect('t')
+            ->leftJoin('a.author', 'u')
+            ->addSelect('u')
             ->getQuery()
             ->getResult()
             ;

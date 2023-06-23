@@ -8,9 +8,12 @@ use Doctrine\Common\Collections\Collection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
+ * @Assert\EnableAutoMapping()
  */
 class Article
 {
@@ -24,6 +27,7 @@ class Article
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups("api")
+     * @Assert\DisableAutoMapping()
      */
     private $title;
 
@@ -31,11 +35,13 @@ class Article
      * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(type="string", length=100)
      * @Groups("api")
+     * @Assert\DisableAutoMapping()
      */
     private $slug;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Assert\DisableAutoMapping()
      * @Groups("api")
      */
     private $description;
@@ -43,6 +49,7 @@ class Article
     /**
      * @ORM\Column(type="string", length=1020)
      * @Groups("api")
+     * @Assert\NotBlank(message="Контент статьи не может быть пустым")
      */
     private $body;
 
@@ -98,6 +105,7 @@ class Article
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="articles")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank(message="У статьи должен быть автор")
      */
     private $author;
 
@@ -118,7 +126,7 @@ class Article
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
@@ -316,5 +324,17 @@ class Article
     public function isPublished(): bool
     {
         return null !== $this->getPublishedAt();
+    }
+
+    /**
+     * @Assert\Callback()
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if (preg_match('/[0-9]+/', $this->getTitle())) {
+            $context->buildViolation('Заголовок не должен содержать цифр')
+                ->atPath('title')
+                ->addViolation();
+        }
     }
 }

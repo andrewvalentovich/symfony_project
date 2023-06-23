@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -44,38 +45,21 @@ class ArticlesController extends AbstractController
         $form = $this->createForm(ArticleFormType::class);
 
         $filenameArray = [
-            'article-1.jpeg',
-            'article-2.jpeg',
-            'article-3.jpg'
+            'images/article-1.jpeg',
+            'images/article-2.jpeg',
+            'images/article-3.jpg'
         ];
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            /** @var Article $article */
-            $article = $form->getData();
-            $article->setImageFilename($filenameArray[rand(0, 2)]);
-
-            $words = ['стакан', 'жук', 'точка'];
-
-            $title = $article->getTitle();
-            $body = $article->getBody();
-
-            $article->setTitle($filter->filter($title, $words));
-            $article->setBody($filter->filter($body, $words));
-
-            $em->persist($article);
-            $em->flush();
-
+        if ($article = $this->handleFormRequest($em, $request, $form, $filter, $filenameArray, true)) {
             $this->addFlash('flash_message', 'Статья успешно создана');
-
             return $this->redirectToRoute('app_admin_articles');
         }
 
 
         return $this->render('admin/articles/create.html.twig', [
-            'articleForm' => $form->createView()
+            'articleForm' => $form->createView(),
+            'showError' =>  $form->isSubmitted(),
+
         ]);
     }
 
@@ -83,8 +67,50 @@ class ArticlesController extends AbstractController
      * @Route("/admin/articles/{id}/edit", name="app_admin_articles_edit")
      * @IsGranted("VOTER_ARTICLE_EDIT", subject="article")
      */
-    public function edit(Article $article)
+    public function edit(EntityManagerInterface $em, Request $request, Article $article)
     {
-        return new Response('Страница редактирования статьи '. $article->getTitle());
+        $form = $this->createForm(ArticleFormType::class, $article);
+
+        if ($article = $this->handleFormRequest($em, $request, $form)) {
+            $this->addFlash('flash_message', 'Статья успешно изменена');
+            return $this->redirectToRoute('app_admin_articles_edit', ['id'  =>  $article->getId()]);
+        }
+
+        return $this->render('admin/articles/create.html.twig', [
+            'articleForm' => $form->createView(),
+            'showError' =>  $form->isSubmitted(),
+        ]);
+    }
+
+    private function handleFormRequest(
+        EntityManagerInterface $em,
+        Request $request,
+        FormInterface $form,
+        ArticleWordsFilter $filter = null,
+        array $filenameArray = null,
+        bool $articleFilter = false
+    ) {
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            /** @var Article $article */
+            $article = $form->getData();
+
+            if ($articleFilter) {
+                $article->setImageFilename($filenameArray[rand(0, count($filenameArray)-1)]);
+                $words = ['стакан', 'жук', 'точка'];
+
+                $title = $article->getTitle();
+                $body = $article->getBody();
+                $article->setTitle($filter->filter($title, $words));
+                $article->setBody($filter->filter($body, $words));
+            }
+
+            $em->persist($article);
+            $em->flush();
+
+            return $article;
+        }
     }
 }

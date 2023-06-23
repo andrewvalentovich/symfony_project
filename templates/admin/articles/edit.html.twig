@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Создание статьи{% endblock %}
+{% block title %}Редактирование статьи{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -19,9 +19,10 @@
             <div class="col-12">
                 <div class="p-4 border rounded-lg mb-4 shadow-sm bg-white">
 
-                    <h1>Создание статьи</h1>
+                    <h1>Редактирование статьи</h1>
 
-                    {% include 'admin/articles/form.html.twig' with { button_text : 'Создать' } %}
+                    {% include 'admin/articles/form.html.twig' with { button_text : 'Изменить' } %}
+
                 </div>
             </div>
         </div>

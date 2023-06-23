@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
+use Symfony\Component\Validator\Constraints\Length;
 
 class ArticleFormType extends AbstractType
 {
@@ -32,11 +33,24 @@ class ArticleFormType extends AbstractType
     {
         $builder
             ->add('title', null, [
-                'label'   =>  'Название статьи'
+                'label'   =>  'Название статьи',
+                'required'  =>  'false',
+                'constraints'   =>  [
+                    new Length([
+                        'min'   =>  3,
+                        'minMessage'    =>  'Заголовок должен содержать минимум 3 символа'
+                    ])
+                ]
             ])
             ->add('description', TextareaType::class, [
                 'attr'  =>  ['rows' =>  '3'],
-                'label'  =>  'Описание статьи'
+                'label'  =>  'Описание статьи',
+                'constraints'   =>  [
+                    new Length([
+                        'min'   =>  100,
+                        'minMessage'    =>  'Описание статьи должено содержать минимум 100 символов'
+                    ])
+                ]
             ])
             ->add('body', TextareaType::class, [
                 'attr'  =>  ['rows' =>  '10'],

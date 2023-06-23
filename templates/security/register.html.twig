@@ -16,49 +16,30 @@
 
             <div class="col-sm-12">
 
-                <form class="form-signin" method="post">
-
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                {{ form_start(registrationForm, {
+                    attr: { class: 'form-signin', novalidate: 'novalidate'}
+                }) }}
 
                     <h1 class="h3 mb-3 font-weight-normal">Регистрация</h1>
-                    <label for="inputEmail" class="sr-only">Email адрес</label>
-                    <input
-                            type="email"
-                            id="inputEmail"
-                            name="email"
-                            class="form-control"
-                            placeholder="Ваш Email..."
-                            required
-                            autofocus
-                    >
 
-                    <label for="inputPassword" class="sr-only">Имя</label>
-                    <input
-                            type="text"
-                            id="inputName"
-                            name="firstName"
-                            class="form-control"
-                            placeholder="Ваше Имя..."
-                    >
-
-                    <label for="inputPassword" class="sr-only">Пароль</label>
-                    <input
-                            type="password"
-                            id="inputPassword"
-                            name="password"
-                            class="form-control"
-                            placeholder="Ваш Пароль..."
-                            required
-                    >
-
-                    <div class="checkbox mb-3">
-                        <label>
-                            <input type="checkbox" name="agree"> Согласен с условиями
-                        </label>
-                    </div>
+                    {{ form_row(registrationForm.email, {
+                        attr: { placeholder: 'Введите email' },
+                        label: 'Ваша почта'
+                    }) }}
+                    {{ form_row(registrationForm.firstName, {
+                        attr: { placeholder: 'Введите имя' },
+                        label: 'Ваше имя'
+                    }) }}
+                    {{ form_row(registrationForm.plainPassword, {
+                        attr: { placeholder: 'Введите пароль' },
+                        label: 'Пароль'
+                    }) }}
+                    {{ form_row(registrationForm.agreeTerms, {
+                        label: 'Согласен с условиями'
+                    }) }}
 
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
-                </form>
+                {{ form_end(registrationForm) }}
             </div>
 
         </div>
