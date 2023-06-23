@@ -1,0 +1,17 @@
+{% extends 'base_content.html.twig' %}
+
+{% block title %}Страница администрирования{% endblock %}
+{% block content_row_class %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="d-flex justify-content-between" style="height: 100%;">
+                <h3 class="align-self-center mb-0">Добро пожаловать на страницу администрирования, {{ app.user.firstName }}</h3>
+        </div>
+    </div>
+    <ul class="list-group list-group-flush mt-4" style="width: 100%">
+        <li class="list-group-item"><a href="{{ path('app_admin_comments') }}">Управление комментариями</a></li>
+        <li class="list-group-item"><a href="{{ path('app_admin_tags') }}">Управление тэгами</a></li>
+    </ul>
+{% endblock %}
