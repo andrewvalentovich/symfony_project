@@ -21,11 +21,15 @@
                 }) }}
 
                     <h1 class="h3 mb-3 font-weight-normal">Регистрация</h1>
-
                     {{ form_row(registrationForm.email, {
-                        attr: { placeholder: 'Введите email' },
-                        label: 'Ваша почта'
+                        attr: {
+                            placeholder: 'Введите email',
+                            class: 'form-control'
+                        },
+                        label: 'Ваша почта',
+                        symbol: '@'
                     }) }}
+
                     {{ form_row(registrationForm.firstName, {
                         attr: { placeholder: 'Введите имя' },
                         label: 'Ваше имя'
@@ -39,7 +43,9 @@
                     }) }}
 
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
+
                 {{ form_end(registrationForm) }}
+
             </div>
 
         </div>

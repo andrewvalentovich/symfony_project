@@ -1,0 +1,13 @@
+{% block custom_email_row %}
+    <div class="form-group">
+        {{ form_label(form) }}
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">{{ symbol }}</div>
+                </div>
+                {%- set type = type|default('text') -%}
+                <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+            </div>
+        {{ form_help(form) }}
+    </div>
+{% endblock %}

@@ -2,57 +2,31 @@
 
 namespace App\Form;
 
-use App\Entity\User;
-use App\Validator\SpamFilter;
-use App\Validator\SpamFilterValidator;
+use App\Form\Model\UserRegistrationFormModel;
+use App\Form\Type\CustomEmailType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\IsTrue;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserRegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', EmailType::class, [
-                'constraints'   =>  [
-                    new SpamFilter()
-                ]
-            ])
+            ->add('email', CustomEmailType::class)
             ->add('firstName')
-            ->add('plainPassword', PasswordType::class, [
-                'mapped'    =>  false,
-                'constraints'    =>  [
-                    new NotBlank([
-                        'message'   =>  'Пароль не указан'
-                    ]),
-                    new Length([
-                        'min'   =>  6,
-                        'minMessage'   =>  'Пароль должен содержать минимум 6 символов'
-                    ])
-                ]
-            ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped'    =>  false,
-                'constraints'   =>  [
-                    new IsTrue([
-                        'message'   =>  'Это поле является обязательным'
-                    ])
-                ]
-            ])
+            ->add('plainPassword', PasswordType::class)
+            ->add('agreeTerms', CheckboxType::class)
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => UserRegistrationFormModel::class,
         ]);
     }
 }
