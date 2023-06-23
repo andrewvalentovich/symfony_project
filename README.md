@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# symfony_project
-=======
 # symfony_project
 # Учебный проект по Symfony
 
